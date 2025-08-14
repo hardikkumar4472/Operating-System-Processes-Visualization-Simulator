@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Job Scheduler Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-microchip"></i> OS Job Scheduler Visualizer</h1>
+            <p>Interactive simulation of CPU scheduling algorithms</p>
+        </header>
+
+        <main class="main-content">
+            <section class="control-panel">
+                <div class="algorithm-selector">
+                    <h3><i class="fas fa-cog"></i> Scheduling Algorithm</h3>
+                    <select id="algorithmSelect" class="algorithm-dropdown">
+                        <option value="fcfs">First-Come, First-Served (FCFS)</option>
+                        <option value="sjf">Shortest Job First (SJF) - Non-preemptive</option>
+                        <option value="srtf">Shortest Remaining Time First (SRTF) - Preemptive</option>
+                        <option value="rr">Round Robin (RR)</option>
+                        <option value="priority">Priority Scheduling - Non-preemptive</option>
+                        <option value="priority-preemptive">Priority Scheduling - Preemptive</option>
+                        <option value="hrrn">Highest Response Ratio Next (HRRN)</option>
+                        <option value="multilevel">Multilevel Queue</option>
+                        <option value="multilevel-feedback">Multilevel Feedback Queue</option>
+                    </select>
+                </div>
+
+                <div class="process-input">
+                    <h3><i class="fas fa-plus-circle"></i> Add Process</h3>
+                    <div class="input-group">
+                        <input type="text" id="processName" placeholder="Process Name (e.g., P1)" class="input-field">
+                        <input type="number" id="arrivalTime" placeholder="Arrival Time" class="input-field" min="0">
+                        <input type="number" id="burstTime" placeholder="Burst Time" class="input-field" min="1">
+                        <input type="number" id="priority" placeholder="Priority (1-10)" class="input-field" min="1" max="10">
+                        <button id="addProcess" class="btn btn-primary"><i class="fas fa-plus"></i> Add</button>
+                    </div>
+                </div>
+
+                <div class="simulation-controls">
+                    <h3><i class="fas fa-play"></i> Simulation Controls</h3>
+                    <div class="control-buttons">
+                        <button id="startSimulation" class="btn btn-success"><i class="fas fa-play"></i> Start</button>
+                        <button id="pauseSimulation" class="btn btn-warning" disabled><i class="fas fa-pause"></i> Pause</button>
+                        <button id="resetSimulation" class="btn btn-danger"><i class="fas fa-redo"></i> Reset</button>
+                        <button id="stepSimulation" class="btn btn-info"><i class="fas fa-step-forward"></i> Step</button>
+                    </div>
+                    <div class="quantum-input" id="quantumInput" style="display: none;">
+                        <label for="timeQuantum">Time Quantum:</label>
+                        <input type="number" id="timeQuantum" value="2" min="1" max="10" class="input-field">
+                    </div>
+                </div>
+            </section>
+
+            <section class="process-section">
+                <h3><i class="fas fa-table"></i> Process Queue</h3>
+                <div class="table-container">
+                    <table id="processTable" class="process-table">
+                        <thead>
+                            <tr>
+                                <th>Process</th>
+                                <th>Arrival Time</th>
+                                <th>Burst Time</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="processTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="gantt-section">
+                <h3><i class="fas fa-chart-bar"></i> Gantt Chart</h3>
+                <div class="gantt-container">
+                    <div id="ganttChart" class="gantt-chart"></div>
+                    <div id="timeline" class="timeline"></div>
+                </div>
+            </section>
+
+            <section class="stats-section">
+                <h3><i class="fas fa-chart-line"></i> Performance Metrics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Average Waiting Time</h4>
+                        <p id="avgWaitingTime">0.00</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Average Turnaround Time</h4>
+                        <p id="avgTurnaroundTime">0.00</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Average Response Time</h4>
+                        <p id="avgResponseTime">0.00</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>CPU Utilization</h4>
+                        <p id="cpuUtilization">0.00%</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Throughput</h4>
+                        <p id="throughput">0.00</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Total Time</h4>
+                        <p id="totalTime">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="results-section">
+                <h3><i class="fas fa-list-alt"></i> Detailed Results</h3>
+                <div class="table-container">
+                    <table id="resultsTable" class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Process</th>
+                                <th>Arrival Time</th>
+                                <th>Burst Time</th>
+                                <th>Completion Time</th>
+                                <th>Turnaround Time</th>
+                                <th>Waiting Time</th>
+                                <th>Response Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 OS Job Scheduler Visualizer. Built by Hardik Kumar.</p>
+        </footer>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
